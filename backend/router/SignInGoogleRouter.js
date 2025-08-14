@@ -30,7 +30,7 @@ router.post("/google", async (req, res) => {
       user = await User.create({ googleId, name, email, profilepic: picture || "" });
     } else if (!user.profilepic && picture) {
       user.profilepic = picture;
-      await user.save()
+      await user.save();
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
