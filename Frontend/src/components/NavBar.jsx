@@ -124,7 +124,7 @@ const NavBar = () => {
       </div>
 
       {/* Right Section */}
-      <div className="flex items-center gap-5 ml-8 ">
+      <div className="flex items-center gap-5 ml-8 lg:ml-0 ">
         <Bell />
         {user ? (
           <div
