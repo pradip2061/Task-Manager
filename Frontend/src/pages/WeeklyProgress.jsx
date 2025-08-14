@@ -11,7 +11,7 @@ const WeeklyProgress = () => {
   const navigate = useNavigate();
 
   const { weeklyTasks } = useSelector((state) => state.gettask);
-  const [statusLoading, setStatusLoading] = useState(false);
+  const [statusLoading, setStatusLoading] = useState(null); // store taskId being updated
   const [deleteLoading, setDeleteLoading] = useState(null); // store taskId being deleted
 
   const initialDay = localStorage.getItem("day") || "Sunday";
@@ -23,7 +23,7 @@ const WeeklyProgress = () => {
 
   const handleStatusChange = async (dayid, taskid, currentStatus) => {
     try {
-      setStatusLoading(true);
+      setStatusLoading(taskid); // set loading for specific task
       const newStatus = currentStatus === "completed" ? "pending" : "completed";
       await axios.put(`${import.meta.env.VITE_BASE_URL}/updatestatustask`, {
         dayid,
@@ -34,7 +34,7 @@ const WeeklyProgress = () => {
     } catch (error) {
       console.error("Error updating task status:", error);
     } finally {
-      setStatusLoading(false);
+      setStatusLoading(null); // reset after update
     }
   };
 
@@ -117,7 +117,13 @@ const WeeklyProgress = () => {
                 {/* Task Info */}
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <h3 className={`font-medium text-gray-900 ${task.status === 'completed' ? 'line-through':null}`}>{task.title}</h3>
+                    <h3
+                      className={`font-medium text-gray-900 ${
+                        task.status === "completed" ? "line-through" : ""
+                      }`}
+                    >
+                      {task.title}
+                    </h3>
                     <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
                       {filteredTasks[0]?.day}
                     </span>
@@ -135,7 +141,13 @@ const WeeklyProgress = () => {
                   </div>
 
                   {task.description && (
-                    <p className={`text-sm text-gray-600 ${task.status === 'completed' ? 'line-through':null}`}>{task.description}</p>
+                    <p
+                      className={`text-sm text-gray-600 ${
+                        task.status === "completed" ? "line-through" : ""
+                      }`}
+                    >
+                      {task.description}
+                    </p>
                   )}
                 </div>
 
@@ -148,16 +160,23 @@ const WeeklyProgress = () => {
                       ? "In Progress"
                       : "Pending"}
                   </button>
-                  <input
-                    type="checkbox"
-                    className="w-5 h-5"
-                    checked={task.status === "completed"}
-                    onClick={(e) => e.stopPropagation()}
-                    onChange={() =>
-                      handleStatusChange(filteredTasks[0]._id, task._id, task.status)
-                    }
-                    disabled={statusLoading}
-                  />
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      className="w-5 h-5"
+                      checked={task.status === "completed"}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={() =>
+                        handleStatusChange(filteredTasks[0]._id, task._id, task.status)
+                      }
+                      disabled={statusLoading === task._id}
+                    />
+                    {statusLoading === task._id && (
+                      <span className="text-xs text-gray-500">Updating...</span>
+                    )}
+                  </div>
+
                   <Edit3
                     className="w-5 h-5 text-blue-600 cursor-pointer hover:text-blue-800"
                     onClick={() =>
@@ -166,6 +185,7 @@ const WeeklyProgress = () => {
                       )
                     }
                   />
+
                   <button
                     onClick={() => deletetask(filteredTasks[0]._id, task._id)}
                     className={`px-3 py-1 text-sm border rounded transition-colors ${
