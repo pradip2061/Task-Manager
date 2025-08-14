@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  /* Or with Google font */
+  --font-cursive: "Pacifico", cursive;
+}
+
+@layer utilities {
+  .no-scrollbar {
+    /* For Firefox */
+    scrollbar-width: none;
+    /* For Chrome, Safari, Edge */
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
