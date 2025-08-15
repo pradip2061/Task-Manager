@@ -88,7 +88,7 @@ if(response.status === 200){
   }, [dispatch, message]);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 p-4 mt-58 lg:mt-20">
+    <div className="fixed inset-0 flex items-center  bg-none justify-center z-50 p-4 mt-38 lg:mt-20 overflow-x-scroll  no-scrollbar ">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-md transform transition-all">
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
           <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
